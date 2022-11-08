@@ -1,0 +1,9 @@
+predators ->,grass,trees,birds,bugs,tigers,bears,chicken,buffaloes
+grass,0,0,1,1,0,1,1,1
+trees,0,0,0,0,0,1,0,1
+birds,0,0,0,0,1,1,0,0
+bugs,0,0,1,0,0,0,1,0
+tigers,0,0,0,0,0,0,0,0
+bears,0,0,0,0,0,0,0,0
+chicken,0,0,0,0,1,1,0,0
+buffaloes,0,0,0,0,1,0,0,0
