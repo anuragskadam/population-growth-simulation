@@ -1,12 +1,17 @@
 import random
 import csv
 import copy
+import pickle
 import numpy as np
 import matplotlib.pyplot as plt
+from scipy.stats import norm
+from math import *
 
 
-LIST_SPECIES = ['grass', 'trees', 'birds',
-                'bugs', 'tigers', 'bears', 'chicken', 'buffaloes']
+
+
+
+LIST_SPECIES = ['Grass', 'Trees', 'Birds', 'Bugs', 'Tigers', 'Bears', 'Chicken', 'Buffaloes']
 LIST_ATTRIBUTES = [[], []]
 
 
@@ -30,13 +35,23 @@ EATING_MATRIX = [[0, 0, 1, 1, 0, 1, 1, 1],
                  [0, 0, 0, 0, 1, 1, 0, 0],
                  [0, 0, 0, 0, 1, 0, 0, 0]]
 
-NO_STEPS = 200
-NO_OF_SIMULATIONS = 100
+
+
+NO_OF_STEPS = 30
+NO_OF_SIMULATIONS = 20
+
+
+
 STEP_COUNTER = 0
 SIMU_COUNTER = 0
 
+MAKE_TOTAL_LIST_BOOL = 0
+
+###
+
 RESULT_ALL_ORGS = []
 
+###
 
 ###
 
@@ -200,12 +215,17 @@ def main():
     global STEP_COUNTER, ALL_ORGANISMS
 
     for num in range(NO_OF_SIMULATIONS):
-        print("Simulation no. ", (num + 1), f'/{NO_OF_SIMULATIONS}')
-        for _ in range(NO_STEPS):
+        simu_list = [[ALL_ORGANISMS]]
+        print("Simulation no. = ", (num + 1), f'/{NO_OF_SIMULATIONS}')
+        for n in range(NO_OF_STEPS):
             step()
+
+            if MAKE_TOTAL_LIST_BOOL == 1:
+                simu_list.append(ALL_ORGANISMS)
+            print(f"\rStep no. = {n}/{NO_OF_STEPS}", end='')
         list_printer([len(i) for i in ALL_ORGANISMS])
 
-        RESULT_ALL_ORGS.append(copy.deepcopy(ALL_ORGANISMS))
+        RESULT_ALL_ORGS.append([len(i) for i in ALL_ORGANISMS])
 
         STEP_COUNTER = 0
         ALL_ORGANISMS = copy.deepcopy(ALL_ORGANISMS_PERMANENT_COPY)
@@ -216,46 +236,35 @@ list_printer([len(i) for i in ALL_ORGANISMS])
 main()
 
 
-# Plot Stufff
 
-POPU_LEN_LISTS = [[] for i in range(NO_OF_SPECIES)]
+# plotter
 
-for ALL in RESULT_ALL_ORGS:
-    for n, POPU in enumerate(ALL):
-        POPU_LEN_LISTS[n].append(len(POPU))
+while(1):
+    a = int(input('Give input for no. of bins in histogram, else press 0 to end ->'))
+    if a != 0:
+        BINS = a
+        n = int(8)
+        for i in range(n):
+            plt.figure(i)
+            dataa = RESULT_ALL_ORGS[i]
+            print(len(dataa))
+            (mu, sigma) = norm.fit(dataa)
+            x = np.linspace(min(dataa), max(dataa), BINS)
+            y = norm.pdf(x, mu, sigma)
+            l = plt.plot(x, y, 'r--', linewidth=2)
+            plt.hist(dataa, bins=BINS, density=True, edgecolor='black')
+            plt.title(LIST_SPECIES[i] +
+                      "\nμ = {0:.2f}  σ = {1:.2f}".format(mu, sigma))
+            plt.xlabel("Final Population")
+            plt.ylabel("Frequency")
+            plt.grid(True)
+            plt.tight_layout()
+        plt.show()
+    else:
+        break
 
-
-for n, _ in enumerate(LIST_SPECIES):
-    plt.figure(n)
-    plt.hist(POPU_LEN_LISTS[n], bins=8, edgecolor='black')
-    plt.title(LIST_SPECIES[n])
-    plt.xlabel("Final Population")
-    plt.ylabel("Frequency")
-    plt.tight_layout()
-plt.show()
-
-
-'''
-small_grass - taste - 100
-trees - taste -
-birds - taste, speed
-bugs - taste, speed, colour, luminosity
-tigers (carnivore) - speed
-bears (omnivore) - speed
-chickens (omnivore) - speed, colour
-buffaloes (herbivore) - speed, strength, neck-length
-
-lifespan, taste, speed, colour, luminosity, strength, neck_length
-
+# with open(f"plotter_{NO_OF_STEPS}_{NO_OF_SIMULATIONS}.pickle", 'wb') as picky:
+#     pickle.dump(RESULT_ALL_ORGS, picky)
 
 
-'''
 
-'''
-targets
-- variables
-- functions
-- data plotting
-- data storage
-
-'''
