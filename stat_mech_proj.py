@@ -247,7 +247,6 @@ while(1):
         for i in range(n):
             plt.figure(i)
             dataa = RESULT_ALL_ORGS[i]
-            print(len(dataa))
             (mu, sigma) = norm.fit(dataa)
             x = np.linspace(min(dataa), max(dataa), BINS)
             y = norm.pdf(x, mu, sigma)
