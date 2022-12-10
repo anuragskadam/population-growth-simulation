@@ -1,1 +1,0 @@
-Adjust the values in line 40 and 41 to get the desired population vs frequency plot.
